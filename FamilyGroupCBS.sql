@@ -12,8 +12,7 @@ CREATE TABLE CSR (
 CREATE TABLE CSR_authority (
     authority_id INT PRIMARY KEY AUTO_INCREMENT,
     csr_id INT,
-    authority_type ENUM('authority', 'user') NOT NULL,  -- Defines CSR as either authority or user
-    `role` ENUM('view_only', 'offer_management', 'family_group_management') NOT NULL,  -- Different permission levels
+    `role` ENUM('ROLE_VIEW_ONLY', 'ROLE_OFFER_MANAGEMENT', 'ROLE_FAMILY_GROUP_MANAGEMENT', 'ROLE_CSR_MANAGEMENT') NOT NULL,  -- Different permission levels
     FOREIGN KEY (csr_id) REFERENCES CSR(csr_id)
 );
 
@@ -60,3 +59,23 @@ CREATE TABLE subscriber_offer (
     FOREIGN KEY (subscriber_id) REFERENCES subscriber(subscriber_id),
     FOREIGN KEY (offer_id) REFERENCES offer(offer_id)
 );
+
+INSERT INTO family_groupcbs.CSR (name_CSR, `password`, phone_number, available)
+VALUES 
+    ('john', '{noop}password123', '1234567890', TRUE),
+    ('jane', '{noop}password456', '0987654321', FALSE),
+    ('alice', '{noop}password789', '1122334455', TRUE),
+    ('bob', '{noop}test123', '2233445566', TRUE),
+    ('charlie', '{noop}password654', '3344556677', FALSE);
+
+INSERT INTO family_groupcbs.CSR_authority (csr_id, `role`)
+VALUES 
+    (1, 'ROLE_VIEW_ONLY'),
+    (1, 'ROLE_OFFER_MANAGEMENT'),
+    (2, 'ROLE_FAMILY_GROUP_MANAGEMENT'),
+    (3, 'ROLE_VIEW_ONLY'),
+	(4, 'ROLE_VIEW_ONLY'),
+    (4, 'ROLE_OFFER_MANAGEMENT'),
+    (4, 'ROLE_CSR_MANAGEMENT'),
+    (4, 'ROLE_OFFER_MANAGEMENT'),
+    (5, 'ROLE_OFFER_MANAGEMENT');
