@@ -2,6 +2,7 @@ package com.example.CBS.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,17 +134,18 @@ public class CSRRestController {
         dto.setAvailable(csr.isAvailable());
         
         if (csr.getCsrAuthorities() != null && !csr.getCsrAuthorities().isEmpty()) {
-            dto.setAuthorities(csr.getCsrAuthorities().stream()
-                    .map(this::convertToAuthorityDTO)
-                    .collect(Collectors.toList()));
+        	CSRAuthorityDTO authorityDTO = convertToAuthorityDTO(csr.getCsrAuthorities());
+        	dto.setAuthorities(List.of(authorityDTO));
         }
         return dto;
     }
     
     
-    private CSRAuthorityDTO convertToAuthorityDTO(CSRAuthority authority) {
+    private CSRAuthorityDTO convertToAuthorityDTO(Set<CSRAuthority> authorities) {
         CSRAuthorityDTO dto = new CSRAuthorityDTO();
-        dto.setRole(authority.getRole());
+        dto.setRoles(authorities.stream()
+        			.map(CSRAuthority::getRole)
+        			.collect(Collectors.toList()));
         return dto;
     }
 }
