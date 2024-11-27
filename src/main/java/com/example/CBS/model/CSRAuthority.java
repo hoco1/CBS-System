@@ -1,15 +1,11 @@
 package com.example.CBS.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "CSR_authority")
@@ -20,10 +16,18 @@ public class CSRAuthority {
         ROLE_OFFER_MANAGEMENT,
         ROLE_FAMILY_GROUP_MANAGEMENT,
         ROLE_CSR_MANAGEMENT;
-    	
+
         @Override
         public String toString() {
-            return name().replace("ROLE_", "");
+            return formatRole(false);
+        }
+        
+        public String formatRole(boolean keepRolePrefix) {
+        	if(keepRolePrefix) {
+        		return name();
+        	}else {
+        		return name().replace("ROLE_", "");
+        	}
         }
     }
 
@@ -32,43 +36,39 @@ public class CSRAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int authorityId;
 
-    @ManyToOne
-    @JoinColumn(name = "csr_id", nullable = false)
-    private CSR csr;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
 
-	public int getAuthorityId() {
-		return authorityId;
-	}
+    @ManyToMany(mappedBy = "csrAuthorities")
+    private Set<CSR> csrs = new HashSet<>();
 
-	public void setAuthorityId(int authorityId) {
-		this.authorityId = authorityId;
-	}
+    public int getAuthorityId() {
+        return authorityId;
+    }
 
-	public CSR getCsr() {
-		return csr;
-	}
+    public void setAuthorityId(int authorityId) {
+        this.authorityId = authorityId;
+    }
 
-	public void setCsr(CSR csr) {
-		this.csr = csr;
-	}
+    public Role getRole() {
+        return role;
+    }
 
-	public Role getRole() {
-		return role;
-	}
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
-	public void setRole(Role role) {
-		this.role = role;
-	}
+    public Set<CSR> getCsrs() {
+        return csrs;
+    }
 
-	@Override
-	public String toString() {
-		return "CSRAuthority [authorityId=" + authorityId + ", csr=" + csr + ", role=" + role + "]";
-	}
-	
-	
-
+    public void setCsrs(Set<CSR> csrs) {
+        this.csrs = csrs;
+    }
+    
+    public void addCsr(CSR csr) {
+        this.csrs.add(csr);
+        csr.getCsrAuthorities().add(this);
+    }
 }
