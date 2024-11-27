@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CSRService implements CrudService<CSR,Integer>{
 	
 	private CSRRepository repositoryCSR;
-	@Autowired
-	private CSRAuthorityRepository repositoryCSRAuthority;
 	
 	@Autowired
 	public CSRService(CSRRepository repositoryCSR) {
@@ -47,6 +45,19 @@ public class CSRService implements CrudService<CSR,Integer>{
     	}
 
     }
+    
+    
+    public CSR findByCsrName(String username) {
+    	try {
+    		return repositoryCSR.findBycsrName(username)
+                    .orElseThrow(() -> new CSRNotFoundException("Did not find CSR id - " + username));
+    	}catch(CSRNotFoundException e) {
+    		throw e;
+    	}catch(Exception e) {
+    		throw new RuntimeException("An unexpected error occurred.");
+    	}
+
+    }
 
     @Override
     public CSR save(CSR theCSR) {
@@ -63,14 +74,20 @@ public class CSRService implements CrudService<CSR,Integer>{
     	}
 
     }
+    
+    @Override
+    public CSR update(CSR theCSR) {
+    	try {
+        	return repositoryCSR.save(theCSR);
+    	}catch(Exception e) {
+    		throw new RuntimeException("An unexpected error occurred.");
+    	}
+
+    }
 
     @Override
     public void deleteById(Integer theId) {
         try {
-            CSR csr = repositoryCSR.findById(theId)
-                    .orElseThrow(() -> new CSRNotFoundException("Did not find CSR with ID - " + theId));
-
-            // Delete the CSR if found
             repositoryCSR.deleteById(theId);
         }catch(Exception e) {
         	throw new RuntimeException("An unexpected error occurred.");

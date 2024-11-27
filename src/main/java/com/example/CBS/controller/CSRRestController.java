@@ -2,26 +2,24 @@ package com.example.CBS.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.CBS.dto.CSRAuthorityDTO;
 import com.example.CBS.dto.CSRDTO;
+import com.example.CBS.exception.CSRNotFoundException;
 import com.example.CBS.exception.InvalidInputException;
 import com.example.CBS.model.CSR;
 import com.example.CBS.model.CSRAuthority;
-import com.example.CBS.repository.CSRRepository;
 import com.example.CBS.service.CSRService;
 
 @RestController
@@ -67,15 +65,23 @@ public class CSRRestController {
     }
 
     @DeleteMapping("/csrs/by-id")
-    public String deleteCSR(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<Map<String,Object>> deleteCSR(@RequestBody Map<String, String> requestBody) {
         try {
             String csrIdStr = requestBody.get("csrId");
             if (csrIdStr == null) {
                 throw new InvalidInputException("csrId must be provided in the request body.");
             }
             int csrId = Integer.parseInt(csrIdStr);
+            
+            CSR csr = serviceCSR.findById(csrId);
+            if(csr == null) {
+            	throw new CSRNotFoundException("Did not find CSR with ID - " + csrId);
+            }
             serviceCSR.deleteById(csrId);
-            return "Deleted CSR id - " + csrId;
+            
+            Map<String,Object> response = Map.of("message","Deleted CSR successfully",
+            										"csrId",csrId);
+            return ResponseEntity.ok(response) ;
             
         } catch (NumberFormatException e) {
             throw new InvalidInputException("Invalid ID provided. ID must be an integer.");
@@ -91,7 +97,11 @@ public class CSRRestController {
         	
         	CSR existingCSR = serviceCSR.findById(theCSR.getCsrId());
         	
-        	if(theCSR.getCsrName() != null) {
+        	if(theCSR.getCsrName() != null && !theCSR.getCsrName().equals(existingCSR.getCsrName())) {
+        		CSR csrWithSameName = serviceCSR.findByCsrName(theCSR.getCsrName());
+        		if(csrWithSameName !=null) {
+        			throw new InvalidInputException("CSR name already exists.");
+        		}
         		existingCSR.setCsrName(theCSR.getCsrName());
         	}
         	
@@ -106,7 +116,7 @@ public class CSRRestController {
         	if(theCSR.getPassword() != null) {
         		existingCSR.setPassword(theCSR.getPassword());
         	}
-            CSR updatedCSR  = serviceCSR.save(existingCSR);
+            CSR updatedCSR  = serviceCSR.update(existingCSR);
             return convertToDTO(updatedCSR);
             
     	}catch(NumberFormatException e) {
@@ -121,11 +131,15 @@ public class CSRRestController {
         dto.setName(csr.getCsrName());
         dto.setPhoneNumber(csr.getPhoneNumber());
         dto.setAvailable(csr.isAvailable());
-        dto.setAuthorities(csr.getCsrAuthorities().stream()
-                .map(this::convertToAuthorityDTO)
-                .collect(Collectors.toList()));
+        
+        if (csr.getCsrAuthorities() != null && !csr.getCsrAuthorities().isEmpty()) {
+            dto.setAuthorities(csr.getCsrAuthorities().stream()
+                    .map(this::convertToAuthorityDTO)
+                    .collect(Collectors.toList()));
+        }
         return dto;
     }
+    
     
     private CSRAuthorityDTO convertToAuthorityDTO(CSRAuthority authority) {
         CSRAuthorityDTO dto = new CSRAuthorityDTO();
