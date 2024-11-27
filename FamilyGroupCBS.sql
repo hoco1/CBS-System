@@ -11,9 +11,15 @@ CREATE TABLE CSR (
 
 CREATE TABLE CSR_authority (
     authority_id INT PRIMARY KEY AUTO_INCREMENT,
-    csr_id INT,
-    `role` ENUM('ROLE_VIEW_ONLY', 'ROLE_OFFER_MANAGEMENT', 'ROLE_FAMILY_GROUP_MANAGEMENT', 'ROLE_CSR_MANAGEMENT') NOT NULL,  -- Different permission levels
-    FOREIGN KEY (csr_id) REFERENCES CSR(csr_id)
+    `role` ENUM('ROLE_VIEW_ONLY', 'ROLE_OFFER_MANAGEMENT', 'ROLE_FAMILY_GROUP_MANAGEMENT', 'ROLE_CSR_MANAGEMENT') NOT NULL  -- Different permission levels
+);
+
+CREATE TABLE csr_authority_mapping (
+    csr_id INT NOT NULL,
+    authority_id INT NOT NULL,
+    PRIMARY KEY (csr_id, authority_id),
+    FOREIGN KEY (csr_id) REFERENCES CSR(csr_id),
+    FOREIGN KEY (authority_id) REFERENCES CSR_authority(authority_id)
 );
 
 CREATE TABLE subscriber (
@@ -68,14 +74,19 @@ VALUES
     ('bob', '{noop}test123', '2233445566', TRUE),
     ('charlie', '{noop}password654', '3344556677', FALSE);
 
-INSERT INTO family_groupcbs.CSR_authority (csr_id, `role`)
+INSERT INTO family_groupcbs.CSR_authority (`role`)
 VALUES 
-    (1, 'ROLE_VIEW_ONLY'),
-    (1, 'ROLE_OFFER_MANAGEMENT'),
-    (2, 'ROLE_FAMILY_GROUP_MANAGEMENT'),
-    (3, 'ROLE_VIEW_ONLY'),
-	(4, 'ROLE_VIEW_ONLY'),
-    (4, 'ROLE_OFFER_MANAGEMENT'),
-    (4, 'ROLE_CSR_MANAGEMENT'),
-    (4, 'ROLE_OFFER_MANAGEMENT'),
-    (5, 'ROLE_OFFER_MANAGEMENT');
+    ('ROLE_FAMILY_GROUP_MANAGEMENT'),
+	('ROLE_VIEW_ONLY'),
+    ('ROLE_CSR_MANAGEMENT'),
+    ('ROLE_OFFER_MANAGEMENT');
+
+INSERT INTO family_groupcbs.csr_authority_mapping (csr_id,authority_id)
+VALUES 
+    (1,1),
+	(4,1),
+    (4,2),
+    (4,3),
+    (4,4),
+    (3,1),
+    (2,2);
