@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -33,8 +35,8 @@ public class Subscriber {
 	@Column(name="prepayment")
 	private BigDecimal prepayment;
 	
-//	@OneToMany(mappedBy="subscriber",cascade=CascadeType.ALL,orphanRemoval=true)
-//	private Set<SubscriberOffer> subscriberOffers = new HashSet<>();
+	@OneToMany(mappedBy="subscriber",cascade=CascadeType.ALL,orphanRemoval=true)
+	private Set<SubscriberOffer> subscriberOffers = new HashSet<>();
 
 	public int getSubscriberId() {
 		return subscriberId;
@@ -84,18 +86,18 @@ public class Subscriber {
 		this.prepayment = prepayment;
 	}
 
-//	public Set<SubscriberOffer> getSubscriberOffers() {
-//		return subscriberOffers;
-//	}
-//
-//	public void setSubscriberOffers(Set<SubscriberOffer> subscriberOffers) {
-//		this.subscriberOffers = subscriberOffers;
-//	}
-//	
-//	public void addOffer(Offer offer) {
-//		SubscriberOffer offers = new SubscriberOffer(this,offer);
-//		subscriberOffers.add(offers);
-//		offer.getSubscriberOffers().add(offers);
-//	}
+	public Set<SubscriberOffer> getSubscriberOffers() {
+		return subscriberOffers;
+	}
+
+	public void setSubscriberOffers(Set<SubscriberOffer> subscriberOffers) {
+		this.subscriberOffers = subscriberOffers;
+	}
+	
+	public void addOffer(Offer offer) {
+		SubscriberOffer offers = new SubscriberOffer(this,offer);
+		subscriberOffers.add(offers);
+		offer.getSubscriberOffers().add(offers);
+	}
 	
 }
