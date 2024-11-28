@@ -30,7 +30,10 @@ public class CSR {
         inverseJoinColumns = @JoinColumn(name = "authority_id") // Foreign key for CSRAuthority
     )
     private Set<CSRAuthority> csrAuthorities;
-
+    
+    @OneToMany(mappedBy="createdByCSR",cascade = CascadeType.ALL)
+    private Set<Offer> offers;
+    
     public Integer getCsrId() {
         return csrId;
     }
