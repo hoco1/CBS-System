@@ -62,6 +62,8 @@ CREATE TABLE subscriber_offer (
     subscriber_id INT,
     offer_id INT,
     data_usedMB DECIMAL(10, 2) DEFAULT 0,  -- Data usage tracked for the specific offer in MB
+    create_time DATE,
+    expiry_time DATE,
     FOREIGN KEY (subscriber_id) REFERENCES subscriber(subscriber_id),
     FOREIGN KEY (offer_id) REFERENCES offer(offer_id)
 );
