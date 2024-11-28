@@ -3,6 +3,7 @@ package com.example.CBS.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.*;
@@ -41,6 +42,7 @@ public class CSRAuthority {
     private Role role;
 
     @ManyToMany(mappedBy = "csrAuthorities")
+    @JsonBackReference
     private Set<CSR> csrs = new HashSet<>();
 
     public int getAuthorityId() {
