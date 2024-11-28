@@ -52,7 +52,7 @@ CREATE TABLE offer (
     offer_name VARCHAR(100) NOT NULL,
     data_limitMB DECIMAL(10, 2) NOT NULL,  -- Total data available in the offer in MB
     validity_days INT NOT NULL,             -- Validity period of the offer in days
-    offer_type ENUM('primary', 'secondary') NOT NULL,
+    offer_type ENUM('PRIMARY', 'SECONDARY') NOT NULL,
     created_byCSRId INT,                    -- CSR who created the offer
     FOREIGN KEY (created_byCSRId) REFERENCES CSR(csr_id)
 );
