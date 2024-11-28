@@ -50,6 +50,9 @@ public class DemoSecurityConfig {
                     .requestMatchers(HttpMethod.DELETE, "api/csrs/by-id").hasRole(Role.ROLE_CSR_MANAGEMENT.toString())
                     .requestMatchers(HttpMethod.POST, "api/add/auth").hasRole(Role.ROLE_CSR_MANAGEMENT.toString())
                     .requestMatchers(HttpMethod.POST, "api/create/offer").hasRole(Role.ROLE_CSR_MANAGEMENT.toString())
+                    .requestMatchers(HttpMethod.POST, "api/register/subscriber").hasRole(Role.ROLE_CSR_MANAGEMENT.toString())
+                    .requestMatchers(HttpMethod.POST, "api/offer/purchase").hasRole(Role.ROLE_CSR_MANAGEMENT.toString())
+                    
         );
 
         http.httpBasic(Customizer.withDefaults());
