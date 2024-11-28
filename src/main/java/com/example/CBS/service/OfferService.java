@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.CBS.model.CSR;
 import com.example.CBS.model.Offer;
+import com.example.CBS.model.Subscriber;
 import com.example.CBS.repository.OfferRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class OfferService {
@@ -28,5 +31,10 @@ public class OfferService {
 		CSR csr = serviceCSR.findByCsrName(username);
 		offer.setCreatedByCSR(csr);
 		return offerRepository.save(offer);
+	}
+	
+	public Offer findById(Integer offerId) {
+		return offerRepository.findById(offerId)
+				.orElseThrow(() -> new EntityNotFoundException("offer not found"));
 	}
 }
