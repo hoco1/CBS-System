@@ -1,6 +1,12 @@
 package com.example.CBS.model;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -10,6 +16,8 @@ public class Offer {
         PRIMARY,
         SECONDARY;
     }
+    
+    public Offer() {}
 
     @Id
     @Column(name = "offer_id")
@@ -33,52 +41,64 @@ public class Offer {
     @JoinColumn(name = "created_byCSRId", nullable = false)
     private CSR createdByCSR;
 
-    // Getters and setters
-    public int getOfferId() {
-        return offerId;
-    }
+    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<SubscriberOffer> subscriberOffers = new HashSet<>();
 
-    public void setOfferId(int offerId) {
-        this.offerId = offerId;
-    }
+	public int getOfferId() {
+		return offerId;
+	}
 
-    public String getOfferName() {
-        return offerName;
-    }
+	public void setOfferId(int offerId) {
+		this.offerId = offerId;
+	}
 
-    public void setOfferName(String offerName) {
-        this.offerName = offerName;
-    }
+	public String getOfferName() {
+		return offerName;
+	}
 
-    public BigDecimal getDataLimitMB() {
-        return dataLimitMB;
-    }
+	public void setOfferName(String offerName) {
+		this.offerName = offerName;
+	}
 
-    public void setDataLimitMB(BigDecimal dataLimitMB) {
-        this.dataLimitMB = dataLimitMB;
-    }
+	public BigDecimal getDataLimitMB() {
+		return dataLimitMB;
+	}
 
-    public int getValidityDays() {
-        return validityDays;
-    }
+	public void setDataLimitMB(BigDecimal dataLimitMB) {
+		this.dataLimitMB = dataLimitMB;
+	}
 
-    public void setValidityDays(int validityDays) {
-        this.validityDays = validityDays;
-    }
+	public int getValidityDays() {
+		return validityDays;
+	}
 
-    public OfferTypes getOfferType() {
-        return offerType;
-    }
+	public void setValidityDays(int validityDays) {
+		this.validityDays = validityDays;
+	}
 
-    public void setOfferType(OfferTypes offerType) {
-        this.offerType = offerType;
-    }
+	public OfferTypes getOfferType() {
+		return offerType;
+	}
 
-    public CSR getCreatedByCSR() {
-        return createdByCSR;
-    }
+	public void setOfferType(OfferTypes offerType) {
+		this.offerType = offerType;
+	}
 
-    public void setCreatedByCSR(CSR createdByCSR) {
-        this.createdByCSR = createdByCSR;
-    }
+	public CSR getCreatedByCSR() {
+		return createdByCSR;
+	}
+
+	public void setCreatedByCSR(CSR createdByCSR) {
+		this.createdByCSR = createdByCSR;
+	}
+
+	public Set<SubscriberOffer> getSubscriberOffers() {
+		return subscriberOffers;
+	}
+
+	public void setSubscriberOffers(Set<SubscriberOffer> subscriberOffers) {
+		this.subscriberOffers = subscriberOffers;
+	}
+    
+    
 }
