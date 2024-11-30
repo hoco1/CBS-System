@@ -14,10 +14,10 @@ public class SubscriberOffer {
     private SubscribedOfferMappingId id;
    
     @Column(name = "data_usedMB")
-    private BigDecimal dataUsedMB;
+    private BigDecimal dataUsedMB = BigDecimal.ZERO;
     
     @Column(name = "data_unusedMB")
-    private BigDecimal dataUnusedMB;
+    private BigDecimal dataUnusedMB=BigDecimal.ZERO;
     
     @Column(name = "create_time")
     private LocalDate createTime;
@@ -43,6 +43,15 @@ public class SubscriberOffer {
 		this.offer = offer;
 		this.id = new SubscribedOfferMappingId(subscriber.getSubscriberId(),offer.getOfferId());
 	}
+	
+	public void usedOffer(Integer amount) {
+	    // Ensure that amount is not null or negative
+	    if (amount != null && amount > 0) {
+	        this.dataUsedMB = this.dataUsedMB.add(BigDecimal.valueOf(amount));  // Reassign the result
+	        this.dataUnusedMB = this.dataUnusedMB.subtract(BigDecimal.valueOf(amount));  // Reassign the result
+	    }
+	}
+
 
 	public BigDecimal getDataUsedMB() {
 		return dataUsedMB;
