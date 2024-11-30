@@ -1,5 +1,6 @@
 package com.example.CBS.controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -45,8 +46,11 @@ public class SubscriberOfferController {
 		subscriberOffer.setExpiryTime(dto.getExpiryTime() !=null ? 
 				dto.getExpiryTime():
 				LocalDate.now().plusDays(offer.getValidityDays()));
+		// after test i put it here :)
+		subscriberOffer.setDataUsedMB(BigDecimal.valueOf(0.00));
+		
 		subscriberOffer.setDataUnusedMB(offer.getDataLimitMB());
-		subscriberOfferService.buyOffer(subscriberOffer);
+		subscriberOfferService.buyOffer(subscriberOffer,offer,subscriber);
         Map<String,Object> response = Map.of("message","offer buyed sucss",
 				"offer id",dto.getSubscriberId());
         return ResponseEntity.ok(response) ;
