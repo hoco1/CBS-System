@@ -76,4 +76,17 @@ public class GlobalExceptionHandler {
         );
 		return new ResponseEntity<>(errorResponse,HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    @ExceptionHandler(OfferExclusionException.class)
+    public ResponseEntity<ErrorResponse> handleOfferExclusionException(OfferExclusionException ex,WebRequest request) {
+        
+		ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+		return new ResponseEntity<>(errorResponse,HttpStatus.CONFLICT);
+    }
 }
