@@ -12,6 +12,8 @@ import com.example.CBS.repository.SubscriberOfferRepository;
 @Service
 public class SubscriberOfferService {
 	private SubscriberOfferRepository subscriberOfferRepository;
+	private SubscriberService subscriberService;
+	private OfferService offerService;
 	
 	@Autowired
 	public SubscriberOfferService(SubscriberOfferRepository subscriberOfferRepository) {
@@ -26,5 +28,15 @@ public class SubscriberOfferService {
 			throw new OfferExclusionException("Subscriber has already purchased this offer.");
 		}
 		return subscriberOfferRepository.save(subscriberOffer);
+	}
+	
+	public SubscriberOffer usedOffer(Offer offer,Subscriber subscriber,Integer usedAmount) {
+		
+
+		SubscriberOffer subscriberOffers = subscriberOfferRepository.findBySubscriberAndOffer(subscriber, offer);
+		
+		subscriberOffers.usedOffer(usedAmount);
+
+		return subscriberOfferRepository.save(subscriberOffers);
 	}
 }

@@ -57,4 +57,34 @@ public class SubscriberOfferController {
 		 
 	}
 	
+	@PostMapping("/simulation/usage")
+	public ResponseEntity<Map<String, Object>> simulationUsage(@RequestBody Map<String, String> requestBody) {
+	    String subscriberId = requestBody.get("subscriberId");
+	    String offerId = requestBody.get("offerId");
+	    String usageAmount = requestBody.get("usageAmount");
+
+	    if (subscriberId == null || offerId == null || usageAmount == null) {
+	        return ResponseEntity.badRequest().body(Map.of("message", "Missing required fields"));
+	    }
+
+	    try {
+	        Integer subscriberIdInt = Integer.parseInt(subscriberId);
+	        Integer offerIdInt = Integer.parseInt(offerId);
+	        Integer usageAmountInt = Integer.parseInt(usageAmount);
+
+	        Subscriber subscriber = subscriberService.findById(subscriberIdInt);
+	        Offer offer = offerService.findById(offerIdInt);
+
+	        if (subscriber == null || offer == null) {
+	            return ResponseEntity.badRequest().body(Map.of("message", "Subscriber or Offer not found"));
+	        }
+
+	        subscriberOfferService.usedOffer(offer, subscriber, usageAmountInt);
+
+	        return ResponseEntity.ok(Map.of("message", "Usage applied successfully"));
+	    } catch (NumberFormatException e) {
+	        return ResponseEntity.badRequest().body(Map.of("message", "Invalid number format"));
+	    }
+	}
+
 }
