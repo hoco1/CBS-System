@@ -26,23 +26,24 @@ public class CSRAuthorityService {
 
         for (Role auth : auths) {
             if (!authCSR.contains(auth.formatRole(true))) {
-                authCSR.add(auth.formatRole(true));
-
-                CSRAuthority newAuthority = new CSRAuthority();
-                newAuthority.setRole(auth);
-
-                // Save the CSRAuthority before linking to CSR
-                authorityRepositoryCSR.save(newAuthority);
-
-                newAuthority.addCsr(csr); // Add CSR to CSRAuthority
-                authorityRepositoryCSR.save(newAuthority); // Update mapping
+                
+            	CSRAuthority existingAuthority = authorityRepositoryCSR.findByRole(auth);
+            	
+            	if(existingAuthority == null) {
+            		CSRAuthority newAuthority = new CSRAuthority();
+            		newAuthority.setRole(auth);
+            		authorityRepositoryCSR.save(newAuthority);
+            		newAuthority.addCsr(csr);
+            		authorityRepositoryCSR.save(newAuthority);
+            	}else {
+            		existingAuthority.addCsr(csr);
+            		authorityRepositoryCSR.save(existingAuthority);
+            	}
+            	
+            	authCSR.add(auth.formatRole(true));
             }
         }
 
         return authCSR;
-    }
-
-	
-	
-	
+    }	
 }

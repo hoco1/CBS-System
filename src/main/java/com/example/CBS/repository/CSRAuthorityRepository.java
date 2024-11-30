@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.CBS.model.CSRAuthority;
+import com.example.CBS.model.CSRAuthority.Role;
 @Repository
 public interface CSRAuthorityRepository extends JpaRepository<CSRAuthority, Integer> {
 	//List<CSRAuthority> findByCsr_csrId(Integer csrId);
@@ -20,4 +21,6 @@ public interface CSRAuthorityRepository extends JpaRepository<CSRAuthority, Inte
             "JOIN CSR_authority authority ON mapping.authority_id = authority.authority_id " +
             "WHERE csr.csr_id = :csrId", nativeQuery = true)
 	List<String> findCSRByCSRAuthorityField(@Param("csrId") Integer csrId);
+
+	CSRAuthority findByRole(Role auth);
 }
