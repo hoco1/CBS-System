@@ -1,27 +1,36 @@
-Features:
-RESTful Endpoints for managing CSRs:
+1. **CSR.java**
+   - Represents a Customer Service Representative.
+   - Attributes: `csrId`, `csrName`, `password`, `phoneNumber`, `available`.
+   - Relationships: Many-to-Many with `CSRAuthority`, One-to-Many with `Offer`.
 
-Create a new CSR.
-Modify a specific CSR.
-Delete a specific CSR.
-Retrieve all CSRs.
-Retrieve a specific CSR.
-Database Structure:
+2. **CSRAuthority.java**
+   - Represents the authority roles of CSRs.
+   - Attributes: `authorityId`, `role`.
+   - Relationships: Many-to-Many with `CSR`.
 
-CSR Table: Stores information about CSRs.
-CSR Authority Table: Maintains the authority associated with each CSR.
-Security:
+3. **Offer.java**
+   - Represents an offer created by a CSR.
+   - Attributes: `offerId`, `offerName`, `dataLimitMB`, `validityDays`, `offerType`.
+   - Relationships: Many-to-One with `CSR`, One-to-Many with `SubscriberOffer`.
 
-Uses Basic Authentication for securing endpoints.
-Ensures that API operations are authorized based on the CSR’s corresponding authority.
-Custom Exception Handling:
+4. **SubscribedOfferMappingId.java**
+   - Composite key for mapping `Subscriber` and `Offer`.
+   - Attributes: `subscriberId`, `offerId`.
 
-Returns descriptive error messages for invalid inputs, missing data, or conflicts.
-Includes:
-CSRNotFoundException
-CSRAlreadyExistsException
-InvalidInputException
-Errors are standardized using a custom ErrorResponse format.
-Tools:
+5. **Subscriber.java**
+   - Represents a subscriber.
+   - Attributes: `subscriberId`, `customerName`, `msisdn`, `subscriberType`, `creditLimit`, `prepayment`.
+   - Relationships: One-to-Many with `SubscriberOffer`.
 
-Tested with Postman for all API operations.
+6. **SubscriberOffer.java**
+   - Represents an offer subscribed by a subscriber.
+   - Attributes: `dataUsedMB`, `dataUnusedMB`, `createTime`, `expiryTime`.
+   - Relationships: Many-to-One with `Subscriber` and `Offer`.
+
+7. **SubscriberType.java**
+   - Enum representing subscriber types: `PREPAID`, `POSTPAID`.
+
+8. **SubscriberTypeConverter.java**
+   - Converts `SubscriberType` to a database column and vice versa.
+
+  ![image](https://github.com/user-attachments/assets/a94698a3-d56c-4702-8a20-09ec9125cafd)
